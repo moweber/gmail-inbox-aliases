@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Robinhood Gmail Dot Variant Defender</title>
+  <meta
+    name="description"
+    content="Generate Gmail dot variants that route to the same inbox, for defensive review and reporting."
+  />
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #121a31;
+      --panel-2: #182341;
+      --text: #edf2ff;
+      --muted: #aab6d6;
+      --accent: #6ee7b7;
+      --accent-2: #60a5fa;
+      --warn: #fbbf24;
+      --danger: #f87171;
+      --border: rgba(255,255,255,.09);
+      --shadow: 0 12px 30px rgba(0,0,0,.35);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background:
+        radial-gradient(circle at top right, rgba(96,165,250,.18), transparent 28%),
+        radial-gradient(circle at top left, rgba(110,231,183,.14), transparent 28%),
+        var(--bg);
+      color: var(--text);
+    }
+
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 20px 80px;
+    }
+
+    .hero {
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.8rem, 3vw, 3rem);
+      line-height: 1.1;
+    }
+
+    .hero p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 850px;
+      line-height: 1.6;
+    }
+
+    .grid {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: 1.1fr .9fr;
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: linear-gradient(180deg, var(--panel), var(--panel-2));
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .card h2 {
+      margin: 0 0 14px;
+      font-size: 1.15rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: .95rem;
+    }
+
+    input[type="email"], input[type="number"] {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 14px 14px;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    input[type="email"]:focus, input[type="number"]:focus {
+      border-color: rgba(96,165,250,.75);
+      box-shadow: 0 0 0 4px rgba(96,165,250,.16);
+    }
+
+    .row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .row > * { flex: 1 1 auto; }
+
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .04s ease, opacity .2s ease, background .2s ease;
+    }
+
+    button:active { transform: translateY(1px); }
+
+    .primary { background: var(--accent); color: #081016; }
+    .secondary { background: var(--accent-2); color: white; }
+    .ghost {
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .danger {
+      background: rgba(248,113,113,.16);
+      color: #ffd6d6;
+      border: 1px solid rgba(248,113,113,.25);
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: .94rem;
+      line-height: 1.55;
+    }
+
+    .pillbar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .pill {
+      background: rgba(255,255,255,.05);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 8px 12px;
+      color: var(--muted);
+      font-size: .92rem;
+    }
+
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      word-break: break-all;
+    }
+
+    .notice {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(251,191,36,.22);
+      background: rgba(251,191,36,.08);
+      color: #fde9b1;
+      line-height: 1.5;
+    }
+
+    .error {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(248,113,113,.24);
+      background: rgba(248,113,113,.09);
+      color: #ffd6d6;
+      line-height: 1.5;
+    }
+
+    .results-toolbar {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .search {
+      margin: 10px 0 14px;
+    }
+
+    .results {
+      max-height: 520px;
+      overflow: auto;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: rgba(255,255,255,.03);
+    }
+
+    .item {
+      padding: 11px 14px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: .95rem;
+    }
+
+    .item:last-child { border-bottom: 0; }
+
+    .checklist {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .footer {
+      margin-top: 24px;
+      color: var(--muted);
+      font-size: .9rem;
+      line-height: 1.6;
+    }
+
+    .small {
+      font-size: .88rem;
+      color: var(--muted);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    @media (max-width: 700px) {
+      .stats {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .stat {
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .stat .label {
+      color: var(--muted);
+      font-size: .85rem;
+      margin-bottom: 6px;
+    }
+
+    .stat .value {
+      font-size: 1.05rem;
+      font-weight: 700;
+      word-break: break-all;
+    }
+
+    a {
+      color: #9cc8ff;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <h1>Robinhood Gmail Dot Variant Defender</h1>
+      <p>
+        Defensive-only utility: enter a Gmail address to generate the set of dotted Gmail variants
+        that still route to the same inbox. This can help users review, report, or search for lookalike
+        addresses involved in phishing incidents.
+      </p>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <h2>Generate dot variants</h2>
+
+        <label for="email">Gmail address</label>
+        <input id="email" type="email" placeholder="your.name@gmail.com" autocomplete="email" />
+
+        <div class="row">
+          <div style="min-width:180px;">
+            <label for="cap">Maximum variants to display</label>
+            <input id="cap" type="number" min="1" max="50000" step="1" value="8192" />
+          </div>
+        </div>
+
+        <div class="row">
+          <button id="generateBtn" class="primary">Generate variants</button>
+          <button id="copyBtn" class="secondary" disabled>Copy all</button>
+          <button id="csvBtn" class="ghost" disabled>Download CSV</button>
+          <button id="clearBtn" class="danger">Clear</button>
+        </div>
+
+        <div class="pillbar" id="pillbar" hidden>
+          <div class="pill">Canonical inbox: <span id="canonical" class="mono"></span></div>
+          <div class="pill">Base username: <span id="baseLocal" class="mono"></span></div>
+          <div class="pill">Possible dot variants: <span id="variantCount" class="mono"></span></div>
+        </div>
+
+        <div id="status"></div>
+
+        <div class="stats" id="stats" hidden>
+          <div class="stat">
+            <div class="label">Entered address</div>
+            <div class="value mono" id="enteredValue"></div>
+          </div>
+          <div class="stat">
+            <div class="label">Canonical Gmail inbox</div>
+            <div class="value mono" id="canonicalValue"></div>
+          </div>
+          <div class="stat">
+            <div class="label">Displayed variants</div>
+            <div class="value mono" id="displayedCount"></div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="card">
+        <h2>What this is for</h2>
+        <p class="muted">
+          Gmail ignores dots in the username part of <span class="mono">@gmail.com</span> addresses, so
+          dotted variants still land in the same mailbox. This tool is for defensive review and reporting only.
+        </p>
+
+        <div class="notice">
+          <strong>Important:</strong> Do not use this to create accounts, bypass limits, or impersonate others.
+          This page does not generate Robinhood links or automate anything.
+        </div>
+
+        <h2 style="margin-top:18px;">Recommended Robinhood response</h2>
+        <ul class="checklist">
+          <li>If you get an unexpected device approval, deny it immediately.</li>
+          <li>Change your password right away.</li>
+          <li>Review devices and remove any you don’t recognize.</li>
+          <li>Avoid clicking links inside suspicious emails—even if the sender looks real.</li>
+          <li>Contact Robinhood support through official channels if you think your account was targeted.</li>
+        </ul>
+
+        <p class="footer">
+          GitHub Pages can host this site as a static HTML file with no backend.
+        </p>
+      </aside>
+    </div>
+
+    <section class="card" style="margin-top:20px;">
+      <div class="results-toolbar">
+        <h2 style="margin:0;">Generated variants</h2>
+      </div>
+
+      <div class="search">
+        <label for="filter">Filter results</label>
+        <input id="filter" type="email" placeholder="Type to filter the generated list..." />
+      </div>
+
+      <div id="results" class="results" aria-live="polite"></div>
+      <p class="small" id="resultsHint" style="margin-top:10px;">
+        Enter a Gmail address and click <strong>Generate variants</strong>.
+      </p>
+    </section>
+  </div>
+
+  <script>
+    const emailInput = document.getElementById('email');
+    const capInput = document.getElementById('cap');
+    const filterInput = document.getElementById('filter');
+    const generateBtn = document.getElementById('generateBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const csvBtn = document.getElementById('csvBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const results = document.getElementById('results');
+    const resultsHint = document.getElementById('resultsHint');
+    const status = document.getElementById('status');
+    const pillbar = document.getElementById('pillbar');
+    const canonicalEl = document.getElementById('canonical');
+    const baseLocalEl = document.getElementById('baseLocal');
+    const variantCountEl = document.getElementById('variantCount');
+    const stats = document.getElementById('stats');
+    const enteredValue = document.getElementById('enteredValue');
+    const canonicalValue = document.getElementById('canonicalValue');
+    const displayedCount = document.getElementById('displayedCount');
+
+    let allVariants = [];
+
+    function escapeHtml(str) {
+      return str.replace(/[&<>"']/g, ch => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[ch]));
+    }
+
+    function parseGmail(input) {
+      const value = input.trim();
+      const match = value.match(/^([^@\s]+)@([^@\s]+)$/i);
+      if (!match) {
+        return { ok: false, error: 'That does not look like a valid email address.' };
+      }
+
+      const localRaw = match[1];
+      const domainRaw = match[2].toLowerCase();
+
+      if (domainRaw !== 'gmail.com' && domainRaw !== 'googlemail.com') {
+        return { ok: false, error: 'This tool only supports @gmail.com or @googlemail.com addresses.' };
+      }
+
+      // Defensive scope: dot-variant generation only.
+      const localLower = localRaw.toLowerCase();
+      const localBeforePlus = localLower.split('+')[0];
+      const baseLocal = localBeforePlus.replace(/\./g, '');
+
+      if (!baseLocal.length) {
+        return { ok: false, error: 'The username part is empty after normalization.' };
+      }
+
+      if (!/^[a-z0-9]+$/i.test(baseLocal)) {
+        return {
+          ok: false,
+          error: 'For simplicity, this tool currently supports letters and digits in the Gmail username.'
+        };
+      }
+
+      return {
+        ok: true,
+        entered: value,
+        domain: 'gmail.com',
+        baseLocal,
+        canonical: baseLocal + '@gmail.com'
+      };
+    }
+
+    function totalDotVariants(baseLocalLength) {
+      if (baseLocalLength <= 1) return 1;
+      return Math.pow(2, baseLocalLength - 1);
+    }
+
+    function generateDotVariants(baseLocal, cap) {
+      if (baseLocal.length === 1) return [baseLocal + '@gmail.com'];
+
+      const results = [];
+      const gaps = baseLocal.length - 1;
+      const total = Math.pow(2, gaps);
+      const limit = Math.min(total, cap);
+
+      for (let mask = 0; mask < limit; mask++) {
+        let out = '';
+        for (let i = 0; i < baseLocal.length; i++) {
+          out += baseLocal[i];
+          if (i < gaps && ((mask >> i) & 1)) {
+            out += '.';
+          }
+        }
+        results.push(out + '@gmail.com');
+      }
+      return results;
+    }
+
+    function showError(message) {
+      status.innerHTML = `<div class="error">${escapeHtml(message)}</div>`;
+    }
+
+    function showNotice(message) {
+      status.innerHTML = `<div class="notice">${escapeHtml(message)}</div>`;
+    }
+
+    function clearStatus() {
+      status.innerHTML = '';
+    }
+
+    function renderList(items) {
+      if (!items.length) {
+        results.innerHTML = `<div class="item">No variants match your filter.</div>`;
+        return;
+      }
+      results.innerHTML = items.map(v => `<div class="item">${escapeHtml(v)}</div>`).join('');
+    }
+
+    function downloadCsv(filename, rows) {
+      const csv = 'email\\n' + rows.map(v => `"${v.replace(/"/g, '""')}"`).join('\\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function resetUI() {
+      allVariants = [];
+      results.innerHTML = '';
+      resultsHint.textContent = 'Enter a Gmail address and click Generate variants.';
+      pillbar.hidden = true;
+      stats.hidden = true;
+      copyBtn.disabled = true;
+      csvBtn.disabled = true;
+      filterInput.value = '';
+      clearStatus();
+    }
+
+    generateBtn.addEventListener('click', () => {
+      clearStatus();
+
+      const parsed = parseGmail(emailInput.value);
+      if (!parsed.ok) {
+        resetUI();
+        showError(parsed.error);
+        return;
+      }
+
+      const cap = Math.max(1, Math.min(50000, Number(capInput.value) || 8192));
+      capInput.value = String(cap);
+
+      const total = totalDotVariants(parsed.baseLocal.length);
+      allVariants = generateDotVariants(parsed.baseLocal, cap);
+
+      renderList(allVariants);
+      resultsHint.textContent = total > cap
+        ? `Showing the first ${allVariants.length.toLocaleString()} of ${total.toLocaleString()} possible dot variants. Increase the display cap if needed.`
+        : `Showing all ${allVariants.length.toLocaleString()} possible dot variants.`;
+
+      canonicalEl.textContent = parsed.canonical;
+      baseLocalEl.textContent = parsed.baseLocal;
+      variantCountEl.textContent = total.toLocaleString();
+      pillbar.hidden = false;
+
+      enteredValue.textContent = parsed.entered;
+      canonicalValue.textContent = parsed.canonical;
+      displayedCount.textContent = allVariants.length.toLocaleString();
+      stats.hidden = false;
+
+      copyBtn.disabled = false;
+      csvBtn.disabled = false;
+
+      if (total > cap) {
+        showNotice(
+          `This Gmail username has ${total.toLocaleString()} possible dot variants. ` +
+          `For performance, only the first ${cap.toLocaleString()} are displayed.`
+        );
+      }
+    });
+
+    copyBtn.addEventListener('click', async () => {
+      if (!allVariants.length) return;
+      try {
+        await navigator.clipboard.writeText(allVariants.join('\n'));
+        showNotice(`Copied ${allVariants.length.toLocaleString()} addresses to your clipboard.`);
+      } catch {
+        showError('Clipboard access failed. Try using Download CSV instead.');
+      }
+    });
+
+    csvBtn.addEventListener('click', () => {
+      if (!allVariants.length) return;
+      const parsed = parseGmail(emailInput.value);
+      const base = parsed.ok ? parsed.baseLocal : 'gmail-variants';
+      downloadCsv(`${base}-gmail-dot-variants.csv`, allVariants);
+    });
+
+    clearBtn.addEventListener('click', () => {
+      emailInput.value = '';
+      capInput.value = '8192';
+      resetUI();
+    });
+
+    filterInput.addEventListener('input', () => {
+      const q = filterInput.value.trim().toLowerCase();
+      if (!allVariants.length) return;
+      if (!q) {
+        renderList(allVariants);
+        return;
+      }
+      renderList(allVariants.filter(v => v.toLowerCase().includes(q)));
+    });
+
+    resetUI();
+  </script>
+</body>
+</html>
