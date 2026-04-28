@@ -1,8 +1,8 @@
-# Protect Your Robinhood Portfolio GitHub Pages tool that helps Robinhood users generate **Gmail dot variants** that route to the **same inbox**, so they can review suspicious lookalike addresses, search their records, and report variants involved in phishing attacks.
+# Protect Your Robinhood Portfolio
+
+### GitHub Pages tool that helps Robinhood users generate **Gmail dot variants** that route to the **same inbox**, so they can review suspicious lookalike addresses, search their records, and report variants involved in phishing attacks.
 
 > Defensive use only. This project does **not** create accounts, prefill signup forms, automate anything against Robinhood, or interact with Robinhood systems in any way.
-
----
 
 ## Why this exists
 
@@ -111,60 +111,3 @@ Example:
   - `j.a.n.e.s.m.i.t.h@gmail.com`
 
 All of those still route to the **same Gmail inbox**.
-
----
-
-## Quick start (GitHub Pages)
-
-### Option A — project site
-
-1. Create a new GitHub repository  
-   Example: `protect-your-robinhood-portfolio`
-
-2. Add these files:
-   - `index.html`
-   - `README.md`
-
-3. Push to GitHub
-
-4. In your repository, go to:
-
-   **Settings → Pages**
-
-5. Under **Build and deployment**:
-   - Source: **Deploy from a branch**
-   - Branch: `main`
-   - Folder: `/ (root)`
-
-6. Save
-
-Your site will publish at:
-
-`https://<your-username>.github.io/<repo-name>/`
-
----
-
-### Option B — user site
-
-If you want the site to live at the root domain:
-
-`https://<your-username>.github.io/`
-
-Create a repository named exactly:
-
-`<your-username>.github.io`
-
-Then place `index.html` at the repository root and enable Pages.
-
----
-
-## Local testing
-
-You can open `index.html` directly in a browser, or run a tiny local server.
-
-### Python 3
-
-```bash
-python -m http.server 8080
-
-
